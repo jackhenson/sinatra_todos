@@ -1,0 +1,5 @@
+<ul id="lists">
+  <% @lists.each do |list| %>
+    <li><%= list[:name] %> <%= list[:todos].size %></li>
+  <% end %>
+</ul>
