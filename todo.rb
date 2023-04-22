@@ -12,6 +12,44 @@ before do
   session[:lists] ||= []
 end
 
+helpers do
+  def complete_list?(list)
+    todos_count(list) > 0 && todos_remaining_count(list) == 0
+  end
+
+  def list_class(list)
+    "complete" if complete_list?(list)
+  end
+
+  def todos_count(list)
+    list[:todos].size
+  end
+
+  def todos_remaining_count(list)
+    list[:todos].select { |todo| !todo[:completed] }.size
+  end
+
+  def completed_todos_ratio(list)
+    "#{todos_remaining_count(list)} / #{todos_count(list)}"
+  end
+
+  def sort_lists(lists, &block)
+    incomplete_lists = {}
+    complete_lists = {}
+
+    lists.each_with_index do |list, idx|
+      if complete_list?(list)
+        complete_lists[idx] = list
+      else
+        incomplete_lists[idx] = list
+      end
+    end
+
+    incomplete_lists.each(&block)
+    complete_lists.each(&block) 
+  end
+end
+
 get "/" do
   redirect "/lists"
 end
